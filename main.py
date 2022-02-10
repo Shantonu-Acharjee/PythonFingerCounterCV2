@@ -1,5 +1,7 @@
 import cv2
 import mediapipe as mp
+import time
+
 
 cap = cv2.VideoCapture(0)
 mpHands = mp.solutions.hands
@@ -8,6 +10,8 @@ mpDraw = mp.solutions.drawing_utils
 fingerCoordinates = [(8, 6), (12, 10), (16, 14), (20, 18)]
 thumCoordinates = (4, 2)
 
+
+pTime = 0
 while True:
     Success, img = cap.read()
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -16,7 +20,6 @@ while True:
     #print(multiLandMarks)
 
     
-
     if multiLandMarks:
         handPoints = []
         for handLms in multiLandMarks:
@@ -44,13 +47,18 @@ while True:
         if handPoints[thumCoordinates[0]][0] > handPoints[thumCoordinates[1]][0]:
             upCount += 1
 
-        cv2.putText(img, str(upCount), (150, 150), cv2.FONT_HERSHEY_PLAIN, 12, (255, 0, 0), 12)
+        cv2.putText(img, str(upCount), (20, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
 
+
+    cTime = time.time()
+    fps = 1/(cTime - pTime)
+    pTime = cTime
+    cv2.putText(img, f'FPS: {int(fps)}', (420, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
     # print(Success)
     cv2.imshow('Finger Counter', img)
     k = cv2.waitKey(1)
 
-    if k == ord('q'):
+    if k == ord('q') or k == ord('Q'):
         break
 
 
