@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import time
+import os
 
 
 cap = cv2.VideoCapture(0)
@@ -10,6 +11,20 @@ mpDraw = mp.solutions.drawing_utils
 fingerCoordinates = [(8, 6), (12, 10), (16, 14), (20, 18)]
 thumCoordinates = (4, 2)
 
+
+
+folderPath = 'Photos'
+myList = os.listdir(folderPath)
+print(myList)
+
+
+overlayList = []
+for imPath in myList:
+    image = cv2.imread(f'{folderPath}/{imPath}')
+    # print(f'{folderPath}/{imPath}')
+    overlayList.append(image)
+
+print(len(overlayList))
 
 pTime = 0
 while True:
@@ -49,6 +64,9 @@ while True:
 
         cv2.putText(img, str(upCount), (20, 50), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 0), 3)
 
+        h,w,c = overlayList[0].shape
+        img[260:h+260, 240:w+240] = overlayList[upCount]
+        
 
     cTime = time.time()
     fps = 1/(cTime - pTime)
